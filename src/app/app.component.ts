@@ -52,7 +52,7 @@ export class AppComponent {
 
   getRandomImage() {
     const randomIndex = this.random.integer(1, 6);
-    return '../assets/toster_' + randomIndex + '.jpg';
+    return './assets/toster_' + randomIndex + '.jpg';
   }
 
   borderBlock() {
