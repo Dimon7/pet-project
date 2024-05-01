@@ -1,0 +1,246 @@
+<nav class="navbar">
+  <div class="addElements">
+    <button (click)="addElement(img)">Add image</button>
+    <button (click)="addElement(btn)">Add button</button>
+    <button (click)="addElement(text)">Add text block</button>
+  </div>
+</nav>
+
+<div class="body">
+  <div id="left-sidebar" >
+    <div class="elementsList">
+      <div *ngIf="currentIndex > -1">
+        <div class="vote">
+          <span>
+            Do you like it??
+          </span>
+          <button (click)="start(true)">YES</button>
+          <button (click)="start(false)">NO</button>
+          <span style="float: right;">random</span>
+          <hr>
+        </div>
+
+        <div class="current-coor">
+          <h4>Current properties</h4>
+
+          <span class="current-width">
+            <label for="current-width-input">W:</label>
+            <input id="current-width-input" [(ngModel)]="elements[currentIndex].c.w" />
+          </span>
+
+
+          <span class="current-height">
+            <label for="current-height-input">H:</label>
+            <input id="current-height-input" [(ngModel)]="elements[currentIndex].c.h" />
+          </span>
+
+
+          <span class="current-x">
+            <label for="current-x-input">X:</label>
+            <input id="current-x-input"  [(ngModel)]="elements[currentIndex].c.x" />
+          </span>
+
+
+          <span class="current-y">
+            <label for="current-y-input">Y:</label>
+            <input id="current-y-input" [(ngModel)]="elements[currentIndex].c.y" />
+          </span>
+
+
+        </div>
+
+        <hr />
+
+        <div class="limits">
+          <h4>Limits</h4>
+
+          <div class="top-left-limit">
+            <span>TopLeft -></span>
+            <label for="limit-xtl-input">X:</label>
+            <input id="limit-xtl-input" [(ngModel)]="elements[currentIndex].m1.x" />
+
+            <label for="limit-ytl-input">Y:</label>
+            <input id="limit-ytl-input" [(ngModel)]="elements[currentIndex].m1.y" />
+            <button (click)="fixTopLeft()">Fix it</button>
+
+          </div>
+
+          <div class="down-right-limit">
+            <span>DownRight -></span>
+            <label for="limit-xdr-input">X:</label>
+            <input id="limit-xdr-input" [(ngModel)]="elements[currentIndex].m2.x" />
+
+            <label for="limit-ydr-input">Y:</label>
+            <input id="limit-ydr-input" [(ngModel)]="elements[currentIndex].m2.y" />
+            <button (click)="fixRightDown()">Fix it</button>
+          </div>
+
+
+          <div class="width-limit">
+            <span>Width -></span>
+
+            <label for="min-width-input">min:</label>
+            <input id="min-width-input" [(ngModel)]="elements[currentIndex].m1.w" />
+            <button (click)="fixMinWidth()">Fix it</button>
+
+            <label for="max-width-input">max:</label>
+            <input id="max-width-input" [(ngModel)]="elements[currentIndex].m2.w" />
+            <button (click)="fixMaxWidth()">Fix it</button>
+          </div>
+
+          <div class="height-limit">
+            <span>Height -></span>
+
+            <label for="min-height-input">min:</label>
+            <input id="min-height-input" [(ngModel)]="elements[currentIndex].m1.h" type="text" />
+            <button (click)="fixMinHeight()">Fix it</button>
+
+            <label for="max-height-input">max:</label>
+            <input id="max-height-input" [(ngModel)]="elements[currentIndex].m2.h" type="text" />
+            <button (click)="fixMaxHeight()">Fix it</button>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main id="working-area" ngResizable>
+
+    <ng-container
+      *ngFor="let elem of elements; let i = index"
+      [ngTemplateOutlet]="elem.outlet"
+      [ngTemplateOutletContext]="{
+        index: i,
+        elem: elem
+      }"
+    >
+    </ng-container>
+
+    <ng-template #btn let-index="index" let-elem="elem">
+      <button
+        (stopped)="clickOnElement(index, btnElem)"
+        (rzResizing)="clickOnElement(index, btnElem)"
+        (rzStop)="clickOnElement(index, btnElem)"
+        [ngStyle]="{
+          transform: 'translate(' + elem.c.x + 'px, ' + elem.c.y + 'px)',
+          width: elem.c.w + 'px',
+          height: elem.c.h + 'px',
+          zIndex: 500
+        }"
+        ngResizable
+        #btnElem
+        (click)="clickOnElement(index, btnElem)"
+        ngDraggable
+      >
+        Купити!
+      </button>
+      <div
+        class="border"
+        [ngStyle]="{
+          transform:
+            'translate(' + elem.border.x + 'px, ' + elem.border.y + 'px)',
+          width: elem.border.width + 'px',
+          height: elem.border.height + 'px',
+          zIndex: 450,
+          background : borderColor
+
+        }"
+      >
+        &nbsp;
+      </div>
+    </ng-template>
+
+    <ng-template #img let-index="index" let-elem="elem">
+      <div
+           #divElement
+           (stopped)="clickOnElement(index, divElement)"
+           ngResizable
+           ngDraggable
+           (click)="clickOnElement(index, divElement)"
+           (rzResizing)="clickOnElement(index, divElement)"
+           [ngStyle]="{
+              transform: 'translate(' + elem.c.x + 'px, ' + elem.c.y + 'px)',
+              width: elem.c.w + 'px',
+              height: elem.c.h + 'px',
+              zIndex: 500
+            }"
+
+      >
+        <img width="100%" height="100%" [src]="elem.imageSrc" />
+      </div>
+        <div
+          class="border"
+          [ngStyle]="{
+            transform:
+              'translate(' + elem.border.x + 'px, ' + elem.border.y + 'px)',
+            width: elem.border.width + 'px',
+            height: elem.border.height + 'px',
+            zIndex: 450,
+            background : borderColor
+
+          }"
+        >
+          &nbsp;
+        </div>
+
+    </ng-template>
+
+    <ng-template #text let-index="index" let-elem="elem">
+      <div
+        #textElem
+        (click)="clickOnElement(index, textElem)"
+        (rzResizing)="clickOnElement(index, textElem)"
+        (stopped)="clickOnElement(index, textElem)"
+        ngDraggable
+        ngResizable
+        [ngStyle]="{
+          transform: 'translate(' + elem.c.x + 'px, ' + elem.c.y + 'px)',
+          width: elem.c.w + 'px',
+          height: elem.c.h + 'px',
+          zIndex: 500
+        }"
+      >
+        This watch features a dark brown leather strap and round stainless steel case of 45mm with Fixed Stainless Steel bezel. Analog dial with silver-tone indices two sub dials and logo. Quartz movement. Water resistant to 100 meters. Capturing the essence of the jet set lifestyle, Michael Kors' Gage features a brown leather strap and a blue dial.
+      </div>
+
+      <div
+        class="border"
+        [ngStyle]="{
+          transform:
+            'translate(' + elem.border.x + 'px, ' + elem.border.y + 'px)',
+          width: elem.border.width + 'px',
+          height: elem.border.height + 'px',
+          zIndex: 450,
+          background : borderColor
+
+        }"
+      >
+        &nbsp;
+      </div>
+    </ng-template>
+  </main>
+
+
+  <div class="right-sidebar">
+    <p>Likes: {{likes}}</p>
+
+    <p *ngFor="let item of crossed; let i =index">
+      <button class="generationItem" (click)="render(item)" >Generation № {{i+1}} </button>&nbsp;
+    </p>
+
+    <div class="neural-network">
+<!--      <p *ngFor="let item of vector; let i = index">-->
+<!--        <button class="generationItem" (click)="render(item)" > Teach № {{i+1}} </button>&nbsp;-->
+<!--      </p>-->
+
+      <p *ngFor="let item of network; let i = index">
+        <button class="generationItem" (click)="render(item)" > Generation of Network № {{i+1}} </button>&nbsp;
+      </p>
+
+      <button *ngIf="average.length>0" (click)="render(average)"> Average </button>
+    </div>
+
+  </div>
+</div>
