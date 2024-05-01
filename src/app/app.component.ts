@@ -41,7 +41,7 @@ export class AppComponent {
   network = [];
   average = [];
 
-  switchBorderBlock = true;
+  switchBorderBlock = false;
   borderColor = '#6495ed3d';
 
   max = { w: 0, h: 0, x: 0, y: 0 };
